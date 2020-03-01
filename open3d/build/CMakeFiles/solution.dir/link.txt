@@ -1,0 +1,1 @@
+/usr/bin/c++    -D_GLIBCXX_USE_CXX11_ABI=0 -fPIC -fopenmp     -rdynamic CMakeFiles/solution.dir/solution.cpp.o  -o solution  -L/home/iqlect/Open3D/lib -Wl,-rpath,/home/iqlect/Open3D/lib -lOpen3D -lGLEW -lGLU -lGL -lglfw -lGL -lturbojpeg -ljsoncpp -lpng16 -lz -ltinyfiledialogs -ltinyobjloader -lqhullcpp -lqhullstatic_r -lgoogletest -ldl 

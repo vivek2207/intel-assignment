@@ -1,0 +1,3 @@
+/home/iqlect/Downloads/open3d/build/CMakeFiles/rebuild_cache.dir
+/home/iqlect/Downloads/open3d/build/CMakeFiles/solution.dir
+/home/iqlect/Downloads/open3d/build/CMakeFiles/edit_cache.dir
