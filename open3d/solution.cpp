@@ -31,10 +31,15 @@
 #include <Open3D/Open3D.h>
 #include <vector>
 #include <stdio.h>
+#include <fstream>
 
 
 using namespace open3d;
 using namespace std;
+
+static int k;
+
+ofstream out_file;
 
 	class Graph 
 	{ 
@@ -44,7 +49,7 @@ using namespace std;
 	    list<int> *adj; 
 	  
 	    // A function used by DFS 
-	    void DFSUtil(int v, bool visited[], int c, int *color); 
+	    void ModifiedDFS(int v, bool visited[], int c, int *color, int ptr[]); 
 	public: 
 	    Graph(int V);   // Constructor 
 	    void addEdge(int v, int w); 
@@ -60,6 +65,7 @@ using namespace std;
 	    for(int v = 0; v < V; v++) 
 	        visited[v] = false; 
 	  	
+        int *ptr = new int[V];
 	    for (int v=0; v<V; v++) 
 	    { 
 	        if (visited[v] == false) 
@@ -67,19 +73,37 @@ using namespace std;
 	            int c=color[v];
 	            // print all reachable vertices 
 	            // from v 
-	            DFSUtil(v, visited, c, color); 
-	 			 
+                k=0;
+	            ModifiedDFS(v, visited, c, color, ptr); 
+	 			
+                for (int i=0; i<k; i++){
+                    for (int j=0; j<k-i-1; j++){
+                        if (ptr[j] > ptr[j+1]){
+                            int tmp=ptr[j];
+                            ptr[j]=ptr[j+1];
+                            ptr[j+1]=tmp;
+                        }
+                    }
+                }
+
+                for(int i=0; i<k; i++){
+                    out_file << ptr[i] << " ";
+                    printf("%d ", ptr[i]);
+                }
+                out_file << "\n";                    
 	            cout << "\n"; 
 	        } 
 	    } 
 	} 
 	  
-	void Graph::DFSUtil(int v, bool visited[], int c, int *color) 
+	void Graph::ModifiedDFS(int v, bool visited[], int c, int *color, int ptr[]) 
 	{ 
 	    // Mark the current node as visited and print it 
 	    visited[v] = true; 
-	    cout << v << " "; 
+	    //cout << v << " "; 
         
+        ptr[k]=v;
+        k++;
         // Iterate through all the vertices adjacent to vertex[v] 
 
 	    list<int>::iterator i; 
@@ -87,7 +111,7 @@ using namespace std;
 	    for(i = adj[v].begin(); i != adj[v].end(); ++i) 
 	        if(!visited[*i])
 	        	if(c==color[*i]) 
-		            DFSUtil(*i, visited, c, color); 
+		            ModifiedDFS(*i, visited, c, color, ptr); 
 	} 
 	  
 	Graph::Graph(int V) 
@@ -110,8 +134,6 @@ int main(int argc, char *argv[]) {
     if (argc < 3) {
         return 0;
     }
-
-    
     
     std::string option(argv[1]);
     if (option == "mesh") {
@@ -133,8 +155,8 @@ int main(int argc, char *argv[]) {
         cout << vertex_size << endl;
         printf("Number of Triangles: ");
         cout << numrows << endl;
-        /*
-        printf("Vertex List\n");
+        
+        /*printf("Vertex List\n");
         
         for (int i=0; i < vertex_size; i++){
         	for (int j=0; j<3; j++){
@@ -192,9 +214,14 @@ int main(int argc, char *argv[]) {
         		g.addEdge(q,r);
         	}
         }
-    
+
+        out_file.open("result.txt");
+        out_file << "'''"<< endl;
+
         cout << "Following are connected components \n"; 
 	    g.IdenticallyColoredConnectedComponents(vertex_color); 
+
+        out_file << "'''"<< endl;
 
         mesh_ptr->ComputeVertexNormals();
         //visualization::DrawGeometries({mesh_ptr}, "Mesh", 1600, 900);
